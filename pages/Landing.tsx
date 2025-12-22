@@ -1,8 +1,12 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Pill, Calendar, Shield, Search, ArrowRight, Activity, Globe, Truck, Stethoscope, Lock, Server, FileText, ShieldCheck } from 'lucide-react';
+import { Pill, Calendar, Shield, Search, ArrowRight, Activity, Globe, Truck, Stethoscope, Lock, Server, FileText, ShieldCheck, Sparkles, MessageSquare } from 'lucide-react';
+import { LiveAssistant } from '../components/LiveAssistant';
 
 export const Landing: React.FC = () => {
+  const [showVoiceAssistant, setShowVoiceAssistant] = useState(false);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -31,10 +35,57 @@ export const Landing: React.FC = () => {
               <Pill className="mr-3 -rotate-45 group-hover:rotate-0 transition-transform duration-300" size={24} />
               Request Medication
             </Link>
-            <Link to="/book-consult" className="group inline-flex items-center justify-center px-8 py-4 border border-slate-600 backdrop-blur-sm bg-slate-800/50 text-lg font-semibold rounded-xl text-white hover:bg-slate-700 hover:border-slate-500 shadow-lg transition-all transform hover:-translate-y-1">
-              <Calendar className="mr-3 group-hover:text-red-400 transition-colors" size={24} />
-              Book Expert Consult
-            </Link>
+            <button 
+              onClick={() => setShowVoiceAssistant(true)}
+              className="group inline-flex items-center justify-center px-8 py-4 border border-slate-600 backdrop-blur-sm bg-slate-800/50 text-lg font-semibold rounded-xl text-white hover:bg-slate-700 hover:border-slate-500 shadow-lg transition-all transform hover:-translate-y-1"
+            >
+              <Sparkles className="mr-3 text-red-400" size={24} />
+              AI Voice Triage
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Real-time Availability Visualization (Mock) */}
+      <section className="py-12 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center gap-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="bg-emerald-100 text-emerald-700 p-1.5 rounded-lg">
+                  <Globe size={20} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900">Global Sourcing Pulse</h3>
+              </div>
+              <p className="text-slate-600 mb-6">
+                Our Gemini-powered intelligence monitors 500+ pharmaceutical hubs and regulatory bodies in real-time to locate hard-to-find treatments.
+              </p>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <div className="text-2xl font-bold text-slate-900">421</div>
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Rare Drugs Monitored</div>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <div className="text-2xl font-bold text-red-600">89ms</div>
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Query Latency</div>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <div className="text-2xl font-bold text-emerald-600">99.9%</div>
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Supply Integrity</div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full md:w-1/2 h-64 bg-slate-900 rounded-2xl relative overflow-hidden flex items-center justify-center">
+              <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80&w=800')] bg-cover"></div>
+              <div className="relative z-10 text-center p-6">
+                <Activity className="text-red-500 mx-auto mb-4 animate-pulse" size={48} />
+                <div className="text-white font-mono text-xs space-y-1">
+                  <div className="text-emerald-400 animate-pulse">Scanning EU Medicines Agency Database...</div>
+                  <div className="text-slate-400 italic">Sourcing orphan therapeutics in Bavaria...</div>
+                  <div className="text-slate-400">Verifying cold-chain logs via IoT Hub...</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -56,7 +107,6 @@ export const Landing: React.FC = () => {
             <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -translate-y-1/2 z-0"></div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative z-10">
-              {/* Step 1 */}
               <div className="group flex flex-col items-center text-center bg-white p-6">
                 <div className="w-20 h-20 bg-slate-50 border-2 border-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:border-red-200 group-hover:bg-red-50 transition-colors duration-300">
                   <Search className="text-slate-400 group-hover:text-red-700 transition-colors" size={32} />
@@ -65,7 +115,6 @@ export const Landing: React.FC = () => {
                 <p className="text-sm text-slate-500">Clinics or patients submit specific rare drug requirements securely.</p>
               </div>
 
-              {/* Step 2 */}
               <div className="group flex flex-col items-center text-center bg-white p-6">
                 <div className="w-20 h-20 bg-slate-50 border-2 border-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:border-red-200 group-hover:bg-red-50 transition-colors duration-300">
                   <Globe className="text-slate-400 group-hover:text-red-700 transition-colors" size={32} />
@@ -74,7 +123,6 @@ export const Landing: React.FC = () => {
                 <p className="text-sm text-slate-500">We query our international network of verified pharmaceutical suppliers.</p>
               </div>
 
-              {/* Step 3 */}
               <div className="group flex flex-col items-center text-center bg-white p-6">
                 <div className="w-20 h-20 bg-slate-50 border-2 border-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:border-red-200 group-hover:bg-red-50 transition-colors duration-300">
                   <Stethoscope className="text-slate-400 group-hover:text-red-700 transition-colors" size={32} />
@@ -83,7 +131,6 @@ export const Landing: React.FC = () => {
                 <p className="text-sm text-slate-500">Medical safety checks and patient consultations with certified doctors.</p>
               </div>
 
-              {/* Step 4 */}
               <div className="group flex flex-col items-center text-center bg-white p-6">
                 <div className="w-20 h-20 bg-slate-50 border-2 border-slate-100 rounded-2xl flex items-center justify-center mb-6 group-hover:border-red-200 group-hover:bg-red-50 transition-colors duration-300">
                   <Truck className="text-slate-400 group-hover:text-red-700 transition-colors" size={32} />
@@ -96,31 +143,7 @@ export const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* Stats/Trust Section */}
-      <section className="py-20 bg-slate-900 border-y border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div className="p-4">
-                 <div className="text-4xl font-extrabold text-white mb-2">24/7</div>
-                 <div className="text-sm font-medium text-red-500 uppercase tracking-wider">Support</div>
-              </div>
-              <div className="p-4 border-l border-slate-800">
-                 <div className="text-4xl font-extrabold text-white mb-2">50+</div>
-                 <div className="text-sm font-medium text-red-500 uppercase tracking-wider">Countries</div>
-              </div>
-              <div className="p-4 border-l border-slate-800">
-                 <div className="text-4xl font-extrabold text-white mb-2">100%</div>
-                 <div className="text-sm font-medium text-red-500 uppercase tracking-wider">Compliance</div>
-              </div>
-              <div className="p-4 border-l border-slate-800">
-                 <div className="text-4xl font-extrabold text-white mb-2">SOC 2</div>
-                 <div className="text-sm font-medium text-red-500 uppercase tracking-wider">Type II Certified</div>
-              </div>
-           </div>
-        </div>
-      </section>
-
-      {/* Security Architecture / Whitepaper Preview */}
+      {/* Security Architecture Section */}
       <section className="py-24 bg-slate-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
@@ -132,7 +155,6 @@ export const Landing: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Card 1: Encryption */}
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition-shadow duration-300">
               <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mb-6">
                 <Lock size={24} />
@@ -143,7 +165,6 @@ export const Landing: React.FC = () => {
               </p>
             </div>
 
-            {/* Card 2: Access Control */}
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition-shadow duration-300">
               <div className="w-12 h-12 bg-red-700 text-white rounded-xl flex items-center justify-center mb-6">
                 <ShieldCheck size={24} />
@@ -154,7 +175,6 @@ export const Landing: React.FC = () => {
               </p>
             </div>
 
-            {/* Card 3: Audit Logging */}
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition-shadow duration-300">
               <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mb-6">
                 <FileText size={24} />
@@ -164,45 +184,11 @@ export const Landing: React.FC = () => {
                 Every interaction with PHI is cryptographically signed and logged. Our audit trails are immutable, satisfying ISO 27001 A.12.4 requirements.
               </p>
             </div>
-
-            {/* Card 4: Infrastructure */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mb-6">
-                <Server size={24} />
-              </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">Sovereign Infrastructure</h4>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Hosted in SOC 2 Type 2 certified data centers with biological access controls, redundant power, and automated disaster recovery protocols.
-              </p>
-            </div>
-
-            {/* Card 5: Vulnerability Mgmt */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-lg transition-shadow duration-300">
-              <div className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mb-6">
-                <Activity size={24} />
-              </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-3">Continuous Monitoring</h4>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Automated vulnerability scanning and 24/7 intrusion detection systems (IDS) monitor the platform for suspicious behavioral patterns.
-              </p>
-            </div>
-
-            {/* Card 6: CTA to Whitepaper */}
-            <div className="bg-slate-900 p-8 rounded-2xl shadow-xl flex flex-col justify-center items-center text-center">
-              <div className="w-16 h-16 bg-red-700 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-red-900/50">
-                <FileText className="text-white" size={32} />
-              </div>
-              <h4 className="text-xl font-bold text-white mb-2">Technical Whitepaper</h4>
-              <p className="text-slate-400 mb-6 text-sm">
-                Download our full security specifications and compliance report.
-              </p>
-              <Link to="/legal/privacy" className="inline-flex items-center text-white font-semibold hover:text-red-400 transition-colors group">
-                Read Full Report <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
           </div>
         </div>
       </section>
+
+      {showVoiceAssistant && <LiveAssistant onClose={() => setShowVoiceAssistant(false)} />}
     </div>
   );
 };

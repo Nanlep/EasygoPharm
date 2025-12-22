@@ -4,8 +4,8 @@ export const APP_NAME = "EasygoPharm";
 
 export const MOCK_USERS = [
   { id: '1', username: 'admin', password: 'password', role: UserRole.SUPER_ADMIN, name: 'System Administrator' },
-  { id: '2', username: 'doctor', password: 'password', role: UserRole.DOCTOR, name: 'Dr. Sarah Bennett' },
-  { id: '3', username: 'pharm', password: 'password', role: UserRole.PHARMACIST, name: 'James Wilson, RPh' },
+  { id: '2', username: 'doctor', password: 'password', role: UserRole.DOCTOR, name: 'Doctor' },
+  { id: '3', username: 'pharm', password: 'password', role: UserRole.PHARMACIST, name: 'Pharmacist' },
 ];
 
 export const TERMS_TEXT = `

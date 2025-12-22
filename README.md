@@ -1,60 +1,65 @@
-# EasygoPharm - Deployment Guide
+
+# EasygoPharm - Production Deployment Guide
 
 ## Overview
-EasygoPharm is a robust, SOC 2 Type 2 and ISO 27001 compliant platform designed for rare drug sourcing and expert medical consultations. This document provides instructions for deploying the application to a production environment.
+EasygoPharm is a production-ready platform for rare drug sourcing. This version utilizes Supabase for persistent storage, Resend for emails, and Twilio for WhatsApp alerts.
 
-## Prerequisites
-*   **Web Server**: Any static file server (Nginx, Apache, AWS S3 + CloudFront, Vercel, Netlify).
-*   **Environment Variables**: A valid Google Gemini API Key.
-*   **SSL/TLS**: Mandatory for production to meet compliance standards (HTTPS).
+## Infrastructure Setup
+
+### 1. Database (Supabase)
+Create the following tables in your Supabase project:
+
+**users**
+- id (uuid, pk)
+- username (text)
+- name (text)
+- role (text)
+- password (text)
+
+**drug_requests**
+- id (uuid, pk)
+- genericName (text)
+- brandName (text)
+- dosageStrength (text)
+- quantity (text)
+- requesterName (text)
+- requesterType (text)
+- contactEmail (text)
+- contactPhone (text)
+- urgency (text)
+- notes (text)
+- status (text)
+- aiAnalysis (text)
+- aiSources (jsonb)
+- created_at (timestamp)
+
+**consultations**
+- id (uuid, pk)
+- patientName (text)
+- contactEmail (text)
+- contactPhone (text)
+- preferredDate (timestamp)
+- reason (text)
+- status (text)
+- created_at (timestamp)
+
+**audit_logs**
+- id (uuid, pk)
+- action (text)
+- user (text)
+- timestamp (timestamp)
+
+### 2. Notifications (Resend & Twilio)
+- **Resend**: Create an account and obtain an API Key.
+- **Twilio**: Create an account, enable the WhatsApp Sandbox (or a Production sender), and obtain SID/Token/Phone.
 
 ## Deployment Instructions
 
-### 1. Application Build
-This application is built using standard ES Modules and React. It does not require a complex build step if served correctly, but using a bundler like Vite is recommended for production optimization.
+1.  **Configure ENV**: Set all variables listed in `.env.example`.
+2.  **Build**: `npm run build`
+3.  **Host**: Deploy `dist/` to your chosen provider (Vercel recommended for serverless API support).
 
-**If serving statically (No Build):**
-1.  Deploy all files to your web root.
-2.  Ensure `index.html` is the entry point.
-3.  Configure your web server to handle Single Page Application (SPA) routing (redirect all 404 requests to `index.html`).
-
-**If using a bundler (Recommended):**
-1.  Install dependencies: `npm install`
-2.  Build the project: `npm run build`
-3.  Deploy the `dist/` folder.
-
-### 2. Environment Configuration
-The application requires the following environment variable to be available at runtime or build time:
-
-*   `API_KEY`: Your Google Gemini API Key.
-    *   *Note*: Ensure this key is restricted to your production domain in the Google Cloud Console to prevent unauthorized usage.
-
-### 3. First-Run Initialization
-Upon the first launch, the system uses browser Local Storage for persistence.
-1.  **Default Admin**: The system initializes with default credentials if the database is empty (check `constants.ts` for demo seeds).
-2.  **Action Required**:
-    *   Log in using the provided administrative credentials.
-    *   Navigate to the **Dashboard > User Management** tab.
-    *   Create a new Super Admin account with a strong, compliant password.
-
-## Architecture & Production Roadmap
-**IMPORTANT**: This application currently runs in a "Standalone Client" mode using Local Storage. For a multi-user production environment, the following architectural updates are required:
-
-1.  **Backend Integration**: 
-    *   Replace `services/storageService.ts` with an API Client.
-    *   Connect to a centralized database (e.g., PostgreSQL, Firebase, Supabase) to allow data sharing between Admins, Doctors, and Pharmacists across different devices.
-2.  **Authentication**:
-    *   Replace the mock `login` function with a secure Identity Provider (Auth0, AWS Cognito, etc.).
-3.  **Security**:
-    *   Enable WAF (Web Application Firewall) on your hosting provider.
-    *   Implement Content Security Policy (CSP) headers.
-
-## Compliance & Security
-To maintain SOC 2 and ISO 27001 compliance:
-*   **Hosting**: Host the application in a secure, audited environment (e.g., AWS, GCP, Azure).
-*   **Access**: Restrict access to the `/admin` route if possible via WAF rules, or rely on the application's authentication.
-*   **Audit Logs**: The application logs critical actions. Ensure these logs are preserved or sent to a centralized logging server in the production API implementation.
-
-## Developer Notes
-*   **Tech Stack**: React 19, Tailwind CSS, Recharts, Lucide React, Google GenAI SDK.
-*   **Entry Point**: `index.tsx` loads the application into the `#root` element in `index.html`.
+## Verification
+- Submit a drug request: Check Supabase dashboard for the record.
+- Verify Inbox: A confirmation email should arrive from Resend.
+- Verify WhatsApp: A message should arrive from the Twilio Sender.

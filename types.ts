@@ -1,3 +1,4 @@
+
 export enum UserRole {
   SUPER_ADMIN = 'SUPER_ADMIN',
   DOCTOR = 'DOCTOR',
@@ -25,28 +26,43 @@ export interface User {
   name: string;
 }
 
+export interface GroundingSource {
+  title: string;
+  uri: string;
+}
+
 export interface DrugRequest {
   id: string;
   requesterName: string;
-  requesterType: 'CLINIC' | 'PATIENT';
+  requesterType: string;
   contactEmail: string;
-  drugName: string;
+  contactPhone: string;
+  genericName: string;
+  brandName?: string;
+  dosageStrength: string;
   quantity: string;
   urgency: 'NORMAL' | 'HIGH' | 'CRITICAL';
   notes: string;
   status: RequestStatus;
-  createdAt: string;
-  aiAnalysis?: string; // Field for Gemini analysis
+  created_at: string;
+  aiAnalysis?: string;
+  aiSources?: GroundingSource[];
+  prescription?: {
+    fileName: string;
+    data: string;
+    mimeType: string;
+  };
 }
 
 export interface Consultation {
   id: string;
   patientName: string;
   contactEmail: string;
+  contactPhone: string;
   preferredDate: string;
   reason: string;
   status: ConsultStatus;
-  createdAt: string;
+  created_at: string;
   doctorNotes?: string;
 }
 
