@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff, Volume2, X, Sparkles, Loader2 } from 'lucide-react';
 import { getAIInstance, decodeAudio, encodeAudio, decodeAudioData } from '../services/geminiService';
@@ -14,7 +15,6 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
   const streamRef = useRef<MediaStream | null>(null);
   const nextStartTimeRef = useRef(0);
   const sourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
-  const sessionPromiseRef = useRef<Promise<any> | null>(null);
 
   const startSession = async () => {
     try {
@@ -57,7 +57,6 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
                 mimeType: 'audio/pcm;rate=16000',
               };
               
-              // Rely solely on sessionPromise resolves
               sessionPromise.then(session => {
                 session.sendRealtimeInput({ media: pcmBlob });
               });
@@ -91,25 +90,16 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
             }
 
             if (message.serverContent?.interrupted) {
-              sourcesRef.current.forEach(s => {
-                try { s.stop(); } catch(e) {}
-              });
+              sourcesRef.current.forEach(s => s.stop());
               sourcesRef.current.clear();
               nextStartTimeRef.current = 0;
               setIsModelSpeaking(false);
             }
           },
-          onclose: () => {
-            setStatus('Disconnected');
-            setIsActive(false);
-          },
-          onerror: (e) => {
-            console.error("Live API Error:", e);
-            setStatus('Connection Error');
-          },
+          onclose: () => setStatus('Disconnected'),
+          onerror: () => setStatus('Connection Error'),
         },
       });
-      sessionPromiseRef.current = sessionPromise;
     } catch (err) {
       console.error(err);
       setStatus('Microphone Access Denied');
@@ -122,7 +112,6 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
       streamRef.current?.getTracks().forEach(t => t.stop());
       audioContextRef.current?.close();
       outputContextRef.current?.close();
-      sessionPromiseRef.current?.then(s => s.close()).catch(() => {});
     };
   }, []);
 
@@ -131,7 +120,7 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
       <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
         <div className="bg-slate-900 p-6 flex justify-between items-center text-white">
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-xl ${isActive ? 'bg-red-600 animate-pulse' : 'bg-slate-700'}`}>
+            <div className="bg-red-600 p-2 rounded-xl animate-pulse">
               <Sparkles size={20} />
             </div>
             <div>
@@ -150,7 +139,7 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
         <div className="p-8 flex flex-col items-center text-center">
           <div className="relative mb-8">
             <div className={`absolute inset-0 bg-red-100 rounded-full animate-ping ${isModelSpeaking ? 'opacity-75' : 'opacity-0'}`}></div>
-            <div className={`w-32 h-32 rounded-full flex items-center justify-center border-4 transition-all duration-500 ${isModelSpeaking ? 'bg-red-50 border-red-200 shadow-lg shadow-red-100' : 'bg-slate-50 border-slate-100'}`}>
+            <div className={`w-32 h-32 rounded-full flex items-center justify-center border-4 transition-all duration-500 ${isModelSpeaking ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-100'}`}>
               {isModelSpeaking ? (
                 <Volume2 size={48} className="text-red-600 animate-bounce" />
               ) : (
@@ -163,7 +152,7 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
             <p className="text-slate-500 text-sm font-medium italic">
               {isModelSpeaking ? "Easygo Assistant is speaking..." : "Speak naturally to describe your medication need"}
             </p>
-            <div className="bg-slate-50 rounded-2xl p-4 min-h-[100px] border border-slate-100 shadow-inner">
+            <div className="bg-slate-50 rounded-2xl p-4 min-h-[100px] border border-slate-100">
               {transcript.length > 0 ? (
                 <div className="text-left space-y-2">
                   {transcript.map((line, i) => (
@@ -171,8 +160,8 @@ export const LiveAssistant: React.FC<{ onClose: () => void }> = ({ onClose }) =>
                   ))}
                 </div>
               ) : (
-                <div className="h-full flex items-center justify-center py-6">
-                  {isActive ? <div className="flex gap-1 items-center"><div className="w-1.5 h-4 bg-red-400 animate-pulse"></div><div className="w-1.5 h-6 bg-red-500 animate-pulse delay-75"></div><div className="w-1.5 h-3 bg-red-300 animate-pulse delay-150"></div></div> : <Loader2 className="animate-spin text-slate-300" />}
+                <div className="h-full flex items-center justify-center">
+                  <Loader2 className="animate-spin text-slate-300" />
                 </div>
               )}
             </div>
